@@ -68,4 +68,26 @@ public class RiderAssignmentApiApplicationTest {
         assertEquals(1, response.size());
         assertEquals(1, testH2Repository.findAll().size());
     }
+
+
+
+    @Test
+    @DisplayName("should register a new assignment")
+    @Sql(
+            statements = "DELETE FROM rider_assignments",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    )
+    public void test3_testAddAssignment() {
+        RiderAssignment assignment = new RiderAssignment(
+                null, 7002L, 302L, AssignmentStatus.ASSIGNED, LocalDateTime.of(2026, 11, 18, 10, 0)
+        );
+        RiderAssignment response = restTemplate.postForObject(baseUrl, assignment, RiderAssignment.class);
+
+        assertNotNull(response);
+        assertNotNull(response.getId());
+        assertEquals(7002L, response.getDeliveryId());
+        assertEquals(302L, response.getRiderId());
+        assertEquals(AssignmentStatus.ASSIGNED, response.getStatus());
+        assertEquals(1, testH2Repository.findAll().size());
+    }
 }
