@@ -50,4 +50,22 @@ public class RiderAssignmentApiApplicationTest {
         assertEquals(0, response.size());
         assertEquals(0, testH2Repository.findAll().size());
     }
+
+
+    @Test
+    @DisplayName("should get all assignments when table is not empty")
+    @Sql(
+            statements = "INSERT INTO rider_assignments(delivery_id, rider_id, status, assigned_at) VALUES (7001, 301, 'ASSIGNED', '2026-11-18 10:00:00')",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+    )
+    @Sql(
+            statements = "DELETE FROM rider_assignments",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    )
+    public void test2_testGetAssignmentsWhenTableIsNotEmpty() {
+        List<?> response = restTemplate.getForObject(baseUrl, List.class);
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(1, testH2Repository.findAll().size());
+    }
 }
